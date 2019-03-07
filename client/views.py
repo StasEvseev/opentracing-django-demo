@@ -49,12 +49,12 @@ def client_simple_view(request):
     event_loop = asyncio.new_event_loop()
     asyncio.set_event_loop(event_loop)
 
-    url = "http://localhost:8000/server/simple"
+    url = "http://host.docker.internal:5001/fixed/v1/order/"
 
     with tracer.start_span('client_simple', tags={
-        tags.HTTP_METHOD: 'GET',
-        tags.HTTP_URL: url,
-        tags.PEER_SERVICE: 'KPN_PAYMENT',
+        # tags.HTTP_METHOD: 'GET',
+        # tags.HTTP_URL: url,
+        # tags.PEER_SERVICE: 'KPN_PAYMENT',
         tags.SPAN_KIND: tags.SPAN_KIND_RPC_CLIENT,
     }, child_of=get_current_span()) as span:
         client.set('last_access', 'testvalue')

@@ -19,11 +19,10 @@ def server_index(request):
 
 @traced_function
 def server_simple_view(request):
+    import re
     regex = re.compile('^HTTP_')
     headers = dict((regex.sub('', header), value) for (header, value)
          in request.META.items() if header.startswith('HTTP_'))
-
-    print(headers)
 
     if 'KPN_TRACE_ID' in headers:
         headers['kpn-trace-id'] = headers.pop('KPN_TRACE_ID')

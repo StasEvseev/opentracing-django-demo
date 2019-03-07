@@ -28,7 +28,7 @@ SECRET_KEY = 'd_1as47_itk5nwdp1fz&cj^#i8=s8s50n@o2(e^+qxttu=$%d#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0']
 
 
 # Application definition
@@ -140,9 +140,6 @@ conf = jaeger_client.Config(config={
     'sampler': {'type': 'const', 'param': 1},
     'trace_id_header': 'kpn_trace_id',
 }, service_name='django-hello16', validate=True)
-
-
-# OPENTRACING_JAEGER_CLIENT = conf.initialize_tracer()
 
 OPENTRACING_TRACING = conf.initialize_tracer()
 
