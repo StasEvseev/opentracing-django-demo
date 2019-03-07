@@ -15,8 +15,23 @@ services:
       - cassandra_common_network
       - datacenter_a_network
 
+  jaeger-collector_b:
+    image: jaegertracing/jaeger-collector
+    command: ["--cassandra.keyspace=jaeger_v1_dc1", "--cassandra.servers=cassandra", "--collector.zipkin.http-port=9411"]
+    ports:
+      - "14269"
+      - "14269:14268"
+      - "14267"
+      - "14250"
+      - "9412:9411"
+    restart: on-failure
+    networks:
+      - cassandra_common_network
+      - datacenter_b_network
+
 
 networks:
   cassandra_common_network:
     external: true
   datacenter_a_network:
+  datacenter_b_network:
