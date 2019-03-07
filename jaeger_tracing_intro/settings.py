@@ -40,11 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_opentracing',
+    # 'django_opentracing',
 ]
 
 MIDDLEWARE = [
-    'django_opentracing.OpenTracingMiddleware',
+    # 'django_opentracing.OpenTracingMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -90,7 +90,7 @@ DATABASES = {
         'NAME': 'jaeger_poc',
         'USER': 'jaeger_poc',
         'PASSWORD': 'jaeger_poc',
-        'HOST': 'localhost',
+        'HOST': 'host.docker.internal',
     }
 }
 
@@ -139,7 +139,7 @@ import jaeger_client
 conf = jaeger_client.Config(config={
     'sampler': {'type': 'const', 'param': 1},
     'trace_id_header': 'kpn_trace_id',
-}, service_name='django-hello15', validate=True)
+}, service_name='django-hello16', validate=True)
 
 
 # OPENTRACING_JAEGER_CLIENT = conf.initialize_tracer()

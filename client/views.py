@@ -19,7 +19,7 @@ from opentracing_instrumentation.request_context import get_current_span
 tracer = settings.OPENTRACING_TRACING
 # redis_opentracing.init_tracing(tracer)
 
-client = redis.StrictRedis()
+client = redis.StrictRedis(host='host.docker.internal')
 
 # jaeger_tracer = settings.OPENTRACING_JAEGER_CLIENT
 

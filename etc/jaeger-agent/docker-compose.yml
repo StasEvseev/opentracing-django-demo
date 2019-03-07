@@ -11,9 +11,8 @@ services:
       - "5778:5778"
     restart: on-failure
     networks:
-      - cassandra_common_network
-
+      - jaeger-collector_datacenter_a_network
 
 networks:
-  cassandra_common_network:
+  jaeger-collector_datacenter_a_network:
     external: true

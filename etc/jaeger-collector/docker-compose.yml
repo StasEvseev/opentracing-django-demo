@@ -13,8 +13,10 @@ services:
     restart: on-failure
     networks:
       - cassandra_common_network
+      - datacenter_a_network
 
 
 networks:
   cassandra_common_network:
     external: true
+  datacenter_a_network:
