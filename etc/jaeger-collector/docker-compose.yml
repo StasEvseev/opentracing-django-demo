@@ -1,0 +1,20 @@
+version: '2'
+
+services:
+  jaeger-collector:
+    image: jaegertracing/jaeger-collector
+    command: ["--cassandra.keyspace=jaeger_v1_dc1", "--cassandra.servers=cassandra", "--collector.zipkin.http-port=9411"]
+    ports:
+      - "14269"
+      - "14268:14268"
+      - "14267"
+      - "14250"
+      - "9411:9411"
+    restart: on-failure
+    networks:
+      - cassandra_common_network
+
+
+networks:
+  cassandra_common_network:
+    external: true

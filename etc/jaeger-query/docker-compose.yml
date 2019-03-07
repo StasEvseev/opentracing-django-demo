@@ -1,0 +1,16 @@
+version: '2'
+
+services:
+  jaeger-query:
+    image: jaegertracing/jaeger-query
+    command: ["--cassandra.keyspace=jaeger_v1_dc1", "--cassandra.servers=cassandra"]
+    ports:
+      - "16686:16686"
+      - "16687"
+    restart: on-failure
+    networks:
+      - cassandra_common_network
+
+networks:
+  cassandra_common_network:
+    external: true
