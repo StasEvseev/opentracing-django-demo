@@ -8,7 +8,8 @@ from opentracing import Format
 from opentracing.ext import tags
 from opentracing_instrumentation import traced_function
 
-tracer = settings.OPENTRACING_TRACING
+from opentracing import tracer
+# tracer = settings.OPENTRACING_TRACING
 
 # Create your views here.
 

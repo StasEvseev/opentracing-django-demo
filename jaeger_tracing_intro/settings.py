@@ -28,7 +28,7 @@ SECRET_KEY = 'd_1as47_itk5nwdp1fz&cj^#i8=s8s50n@o2(e^+qxttu=$%d#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0']
+ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -40,11 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'django_opentracing',
 ]
 
 MIDDLEWARE = [
-    # 'django_opentracing.OpenTracingMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -132,20 +130,3 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
-
-#: Opentracing
-import jaeger_client
-
-conf = jaeger_client.Config(config={
-    'sampler': {'type': 'const', 'param': 1},
-    'trace_id_header': 'kpn_trace_id',
-}, service_name='django-hello16', validate=True)
-
-OPENTRACING_TRACING = conf.initialize_tracer()
-
-# default is False
-OPENTRACING_TRACE_ALL = True
-# default is []
-OPENTRACING_TRACED_ATTRIBUTES = ['META']
-# OPENTRACING_TRACER = OPENTRACING_TRACING
-OPENTRACING_TRACER = django_opentracing.DjangoTracer(OPENTRACING_TRACING)

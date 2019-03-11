@@ -12,6 +12,6 @@ How to run:
 
 Go to etc/cassandra -> docker-compose.yml
 Go to etc/jaeger-collector -> docker-compose.yml
+Go to etc/jaeger-agent -> docker-compose.yml
 Go to etc/jaeger-query -> docker-compose.yml
-
-python manage.py runserver
+Go to etc/app -> docker-compose.yml
