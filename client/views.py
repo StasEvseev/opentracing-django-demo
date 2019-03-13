@@ -10,14 +10,15 @@ from django.contrib.auth.models import User
 
 from django.db.transaction import atomic
 from opentracing_instrumentation.request_context import get_current_span
+from django.conf import settings
 
-from opentracing import tracer
+tracer = settings.TRACER
 
 client = redis.StrictRedis(host='host.docker.internal')
 
 
 def client_index(request):
-    with tracer.start_span('test') as span:
+    with tracer.tracer.start_span('test') as span:
         span.log_event('test_event')
     return HttpResponse("Client index page")
 
@@ -43,14 +44,13 @@ def client_simple_view(request):
         c = User.objects.count()
         print(c)
 
-    with tracer.start_span('client_simple', tags={
+    with tracer.tracer.start_span('client_simple', tags={
         tags.HTTP_METHOD: 'GET',
         tags.HTTP_URL: url,
-        # tags.PEER_SERVICE: 'KPN_PAYMENT',
         tags.SPAN_KIND: tags.SPAN_KIND_RPC_CLIENT,
     }, child_of=get_current_span()) as span:
         headers = {}
-        tracer.inject(span, Format.HTTP_HEADERS, headers)
+        # tracer.inject(span, Format.HTTP_HEADERS, headers)
 
         try:
             response = requests.get(url, headers=headers)

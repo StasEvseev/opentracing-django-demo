@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'client.middleware.OpenTracingMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -130,3 +131,28 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+TEST_SETTING = 'skip'
+
+import jaeger_client
+from opentracing_instrumentation.client_hooks import install_all_patches
+
+
+conf = jaeger_client.Config(config={
+    'sampler': {'type': 'const', 'param': 1},
+    'trace_id_header': 'kpn_trace_id',
+    'local_agent': {
+        'reporting_host': 'jaeger-agent',
+        'enabled': False
+    },
+}, service_name='django-jaeger', validate=True)
+
+
+class Tracer:
+    tracer = None
+
+
+TRACER = Tracer()
+TRACER.tracer = conf.initialize_tracer()
+install_all_patches()

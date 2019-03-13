@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/2.1/howto/deployment/wsgi/
 import os
 
 from django.core.wsgi import get_wsgi_application
+from django.conf import settings
 from opentracing_instrumentation.client_hooks import install_all_patches
 from opentracing_instrumentation.http_server import WSGIRequestWrapper, before_request
 from opentracing_instrumentation.request_context import RequestContextManager
@@ -21,16 +22,27 @@ application = get_wsgi_application()
 
 from uwsgidecorators import postfork
 
+
 @postfork
-def reconnect_to_db():
+def reconnect_to_jaeger():
+    """
+    Do force reconnect to jaeger collector
+    """
     import jaeger_client
     conf = jaeger_client.Config(config={
         'sampler': {'type': 'const', 'param': 1},
         'trace_id_header': 'kpn_trace_id',
+        'local_agent': {
+            'reporting_host': 'jaeger-agent',
+        },
     }, service_name='django-jaeger', validate=True)
 
-    conf.initialize_tracer()
-    install_all_patches()
+    jaeger_client.Config._initialized = False
+    init_tracer = conf.initialize_tracer()
+
+    if init_tracer:
+        install_all_patches()
+        settings.TRACER.tracer = init_tracer
 
 
 def create_wsgi_middleware(other_wsgi, tracer=None):
@@ -60,4 +72,4 @@ def create_wsgi_middleware(other_wsgi, tracer=None):
 
     return wsgi_tracing_middleware
 
-application = create_wsgi_middleware(application)
+# application = create_wsgi_middleware(application)

@@ -45,8 +45,8 @@ services:
     networks:
       - jaeger-collector_datacenter_a_network
       - jaeger-collector_datacenter_b_network
-    environment:
-      - JAEGER_AGENT_HOST=jaeger-agent
+#    environment:
+#      - JAEGER_AGENT_HOST=jaeger-agent
     volumes:
       - "../../.:/opt/django/"
       - "../../etc/app/uwsgi.ini:/etc/uwsgi.ini"
