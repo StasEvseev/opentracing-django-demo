@@ -1,20 +1,27 @@
-from django.http import HttpResponse, StreamingHttpResponse
-import requests
+from django.http import HttpResponse
 import aiohttp
 
-import six
 from opentracing.ext import tags
-from opentracing import Format
+from de.services.digitalengine.conf import settings as de_settings
+from de.services.conf import settings as de_conf_settings
 import redis
 from django.contrib.auth.models import User
 
 from django.db.transaction import atomic
-from opentracing_instrumentation.request_context import get_current_span
 from django.conf import settings
+
+from jaeger_tracing_intro.client import FixedOrderService
 
 tracer = settings.TRACER
 
 client = redis.StrictRedis(host='host.docker.internal')
+
+de_settings.configure(
+    SERVICE_DE_BASE_LOCATION="http://uwsgi:8080"
+)
+de_conf_settings.configure(
+    MOCK_LIBRARY=None
+)
 
 
 def client_index(request):
@@ -36,7 +43,7 @@ async def call_server(event_loop, url, headers, span):
 
 
 def client_simple_view(request):
-    url = "http://uwsgi:8080/fixed/v1/order/"
+    # url = "http://uwsgi:8080/fixed/v1/order/"
 
     client.set('last_access', 'testvalue')
 
@@ -44,17 +51,7 @@ def client_simple_view(request):
         c = User.objects.count()
         print(c)
 
-    with tracer.tracer.start_span('client_simple', tags={
-        tags.HTTP_METHOD: 'GET',
-        tags.HTTP_URL: url,
-        tags.SPAN_KIND: tags.SPAN_KIND_RPC_CLIENT,
-    }, child_of=get_current_span()) as span:
-        headers = {}
-        # tracer.inject(span, Format.HTTP_HEADERS, headers)
+    service = FixedOrderService()
+    response = service.get_status(customer_id=None)()
 
-        try:
-            response = requests.get(url, headers=headers)
-            return HttpResponse(response.content)
-        except six.moves.urllib.error.URLError as e:
-            span.set_tag(tags.ERROR, True)
-            return HttpResponse("Error: " + str(e))
+    return HttpResponse(response.raw_response)

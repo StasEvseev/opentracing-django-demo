@@ -1,32 +1,11 @@
 version: '3'
 
 services:
-  _base_image:
-    build:
-      context: ../../
-      dockerfile: etc/app/Dockerfile
-    image: django_app-baseimage
-    entrypoint: ""
-    command: /bin/false
-
-#  web:
-#    image: django_app-baseimage
-#
-#    command: python manage.py runserver 0.0.0.0:8000
-#    volumes:
-#      - ../../.:/code
-#    ports:
-#      - "8000:8000"
-#    networks:
-#      - jaeger-collector_datacenter_a_network
-#    environment:
-#      - JAEGER_AGENT_HOST=jaeger-agent
   nginx:
     image: nginx:latest
     links:
       - uwsgi
     ports:
-#      - "80:80"
       - "8000:8080"
     networks:
       - jaeger-collector_datacenter_a_network
@@ -40,13 +19,9 @@ services:
       context: ../../.
       dockerfile: etc/app/DockerfileUWSGI
     container_name: django_with_jaeger_a
-#    ports:
-#      - "8000:8000"
     networks:
       - jaeger-collector_datacenter_a_network
       - jaeger-collector_datacenter_b_network
-#    environment:
-#      - JAEGER_AGENT_HOST=jaeger-agent
     volumes:
       - "../../.:/opt/django/"
       - "../../etc/app/uwsgi.ini:/etc/uwsgi.ini"

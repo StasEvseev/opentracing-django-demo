@@ -6,7 +6,7 @@ RUN mkdir -p /opt/django
 WORKDIR /opt/django
 
 COPY requirements.txt /opt/django/
-RUN pip install -r requirements.txt
+RUN pip install --index-url https://artifacts.kpn.org/api/pypi/pypi/simple --trusted-host artifacts.kpn.org -r requirements.txt
 RUN pip install uwsgi
 
 ENTRYPOINT ["/usr/local/bin/uwsgi", "/etc/uwsgi.ini"]

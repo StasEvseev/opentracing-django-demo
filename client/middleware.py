@@ -1,3 +1,5 @@
+import threading
+
 import opentracing
 from django.utils.deprecation import MiddlewareMixin
 from django.conf import settings
@@ -23,6 +25,7 @@ def get_headers(request):
 class OpenTracingMiddleware(MiddlewareMixin):
     span = None
     orig_reporter = None
+    orig_reporter_lock = threading.Lock()
 
     def process_view(self, request, view_func, view_args, view_kwargs):
         # determine whether this middleware should be applied
@@ -39,10 +42,9 @@ class OpenTracingMiddleware(MiddlewareMixin):
             span_ctx = None
 
         if not span_ctx and getattr(settings, 'TEST_SETTING', None) == 'skip':
-            #print(tracer.tracer.reporter)
-
-            tracer.tracer.reporter.close()
-            tracer.tracer.reporter = NullReporter()
+            with self.orig_reporter_lock:
+                self.orig_reporter = tracer.tracer.reporter
+                tracer.tracer.reporter = NullReporter()
 
         self._apply_tracing(request, view_func, tracer.tracer, span_ctx)
         self.request_context.__enter__()
@@ -55,7 +57,7 @@ class OpenTracingMiddleware(MiddlewareMixin):
         """
         # strip headers for trace info
 
-        headers = get_headers(request)
+        # headers = get_headers(request)
 
         # start new span from trace info
         operation_name = view_func.__name__
@@ -92,7 +94,13 @@ class OpenTracingMiddleware(MiddlewareMixin):
         self.span.set_tag('error', str(exception))
         self._finish_tracing(request, error=exception)
 
+        with self.orig_reporter_lock:
+            self.orig_reporter = tracer.tracer.reporter
+
     def process_response(self, request, response):
         print('PROCESS_RESPONSE', response)
         self._finish_tracing(request, response=response)
+
+        with self.orig_reporter_lock:
+            self.orig_reporter = tracer.tracer.reporter
         return response

@@ -133,7 +133,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
-TEST_SETTING = 'skip'
+TEST_SETTING = '1'
 
 import jaeger_client
 from opentracing_instrumentation.client_hooks import install_all_patches

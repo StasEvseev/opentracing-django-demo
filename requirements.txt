@@ -7,3 +7,4 @@ opentracing==1.3.0
 opentracing-instrumentation==2.4.3
 psycopg2
 aiohttp
+service-de-fixed==7.0.0
