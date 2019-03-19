@@ -35,7 +35,7 @@ def reconnect_to_jaeger():
         'local_agent': {
             'reporting_host': 'jaeger-agent',
         },
-    }, service_name='django-jaeger', validate=True)
+    }, service_name=settings.SERVICE_NAME_JAEGER, validate=True)
 
     jaeger_client.Config._initialized = False
     init_tracer = conf.initialize_tracer()

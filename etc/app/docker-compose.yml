@@ -17,7 +17,7 @@ services:
     restart: always
     build:
       context: ../../.
-      dockerfile: etc/app/DockerfileUWSGI
+      dockerfile: etc/app/Dockerfile
     container_name: django_with_jaeger_a
     networks:
       - jaeger-collector_datacenter_a_network

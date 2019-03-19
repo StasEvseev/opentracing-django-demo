@@ -1,3 +1,4 @@
+from de.services.digitalengine.fixed.order.client import FixedOrderService
 from django.http import HttpResponse
 import aiohttp
 
@@ -9,8 +10,6 @@ from django.contrib.auth.models import User
 
 from django.db.transaction import atomic
 from django.conf import settings
-
-from jaeger_tracing_intro.client import FixedOrderService
 
 tracer = settings.TRACER
 

@@ -6,7 +6,7 @@ from django.conf import settings
 from jaeger_client.reporter import NullReporter
 from opentracing.ext import tags
 
-from opentracing_instrumentation.request_context import RequestContextManager
+from opentracing_instrumentation.request_context import RequestContextManager, span_in_stack_context
 
 tracer = settings.TRACER
 
@@ -31,7 +31,10 @@ class OpenTracingMiddleware(MiddlewareMixin):
         # determine whether this middleware should be applied
         # NOTE: if tracing is on but not tracing all requests, then the tracing
         # occurs through decorator functions rather than middleware
-        print('OpenTracingMiddleware:process_view', getattr(settings, 'TEST_SETTING'))
+        import threading
+
+        print('TID - ', threading.get_ident())
+        # print('OpenTracingMiddleware:process_view', getattr(settings, 'TEST_SETTING'))
 
         headers = get_headers(request)
 
@@ -47,6 +50,7 @@ class OpenTracingMiddleware(MiddlewareMixin):
                 tracer.tracer.reporter = NullReporter()
 
         self._apply_tracing(request, view_func, tracer.tracer, span_ctx)
+        # self.span_in_stack.enter()
         self.request_context.__enter__()
 
     def _apply_tracing(self, request, view_func, tracer, span_ctx):
@@ -62,6 +66,8 @@ class OpenTracingMiddleware(MiddlewareMixin):
         # start new span from trace info
         operation_name = view_func.__name__
         span = tracer.start_span(operation_name, child_of=span_ctx)
+
+        # self.span_in_stack = span_in_stack_context(span)
 
         # standard tags
         span.set_tag(tags.COMPONENT, 'django')
@@ -88,9 +94,10 @@ class OpenTracingMiddleware(MiddlewareMixin):
 
         self.span.finish()
         self.request_context.__exit__()
+        # self.span_in_stack.exit(None, None, None)
 
     def process_exception(self, request, exception):
-        print('PROCESS_EXCEPTION', str(exception))
+        # print('PROCESS_EXCEPTION', str(exception))
         self.span.set_tag('error', str(exception))
         self._finish_tracing(request, error=exception)
 
@@ -98,7 +105,7 @@ class OpenTracingMiddleware(MiddlewareMixin):
             self.orig_reporter = tracer.tracer.reporter
 
     def process_response(self, request, response):
-        print('PROCESS_RESPONSE', response)
+        # print('PROCESS_RESPONSE', response)
         self._finish_tracing(request, response=response)
 
         with self.orig_reporter_lock:

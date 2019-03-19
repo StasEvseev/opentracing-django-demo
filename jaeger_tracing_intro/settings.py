@@ -135,8 +135,12 @@ STATIC_URL = '/static/'
 
 TEST_SETTING = '1'
 
+SERVICE_NAME_JAEGER = 'django-jaeger_5_proc_1_thread'
+
 import jaeger_client
 from opentracing_instrumentation.client_hooks import install_all_patches
+
+# from opentracing_instrumentation.client_hooks import install_all_patches, set_current_span_func
 
 
 conf = jaeger_client.Config(config={
@@ -146,7 +150,7 @@ conf = jaeger_client.Config(config={
         'reporting_host': 'jaeger-agent',
         'enabled': False
     },
-}, service_name='django-jaeger', validate=True)
+}, service_name=SERVICE_NAME_JAEGER, validate=True)
 
 
 class Tracer:
