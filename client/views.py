@@ -9,9 +9,6 @@ import redis
 from django.contrib.auth.models import User
 
 from django.db.transaction import atomic
-from django.conf import settings
-
-tracer = settings.TRACER
 
 client = redis.StrictRedis(host='host.docker.internal')
 
@@ -24,8 +21,6 @@ de_conf_settings.configure(
 
 
 def client_index(request):
-    with tracer.tracer.start_span('test') as span:
-        span.log_event('test_event')
     return HttpResponse("Client index page")
 
 

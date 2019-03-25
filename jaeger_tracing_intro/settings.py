@@ -43,7 +43,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'client.middleware.OpenTracingMiddleware',
+    'de.middleware.jaeger.OpenTracingMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -135,28 +135,17 @@ STATIC_URL = '/static/'
 
 TEST_SETTING = '1'
 
-SERVICE_NAME_JAEGER = 'django-jaeger_5_proc_1_thread'
+SERVICE_NAME_JAEGER = 'django-jaeger'
 
 import jaeger_client
 from opentracing_instrumentation.client_hooks import install_all_patches
 
-# from opentracing_instrumentation.client_hooks import install_all_patches, set_current_span_func
-
-
-conf = jaeger_client.Config(config={
+JAEGER_CONFIG = jaeger_client.Config(config={
     'sampler': {'type': 'const', 'param': 1},
     'trace_id_header': 'kpn_trace_id',
     'local_agent': {
-        'reporting_host': 'jaeger-agent',
-        'enabled': False
+        'reporting_host': 'jaeger-agent'
     },
 }, service_name=SERVICE_NAME_JAEGER, validate=True)
-
-
-class Tracer:
-    tracer = None
-
-
-TRACER = Tracer()
-TRACER.tracer = conf.initialize_tracer()
+JAEGER_CONFIG.initialize_tracer()
 install_all_patches()
