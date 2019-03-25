@@ -1,9 +1,11 @@
-version: '2'
+version: '3.5'
 
 services:
   jaeger-collector:
     image: jaegertracing/jaeger-collector
-    command: ["--cassandra.keyspace=jaeger_v1_dc1", "--cassandra.servers=cassandra", "--collector.zipkin.http-port=9411"]
+    # cassandra command: ["--cassandra.keyspace=jaeger_v1_dc1", "--cassandra.servers=cassandra", "--collector.zipkin.http-port=9411"]
+    # elasticsearch
+    command: ["--span-storage.type=elasticsearch", "--es.server-urls=http://elasticsearch:9200"]
     ports:
       - "14269"
       - "14268:14268"
@@ -12,26 +14,29 @@ services:
       - "9411:9411"
     restart: on-failure
     networks:
-      - cassandra_common_network
-      - datacenter_a_network
+#      - cassandra_common_network
+      - storage_network
+      - app_network
 
-  jaeger-collector_b:
-    image: jaegertracing/jaeger-collector
-    command: ["--cassandra.keyspace=jaeger_v1_dc1", "--cassandra.servers=cassandra", "--collector.zipkin.http-port=9411"]
-    ports:
-      - "14269"
-      - "14269:14268"
-      - "14267"
-      - "14250"
-      - "9412:9411"
-    restart: on-failure
-    networks:
-      - cassandra_common_network
-      - datacenter_b_network
+#  jaeger-collector_b:
+#    image: jaegertracing/jaeger-collector
+#    command: ["--cassandra.keyspace=jaeger_v1_dc1", "--cassandra.servers=cassandra", "--collector.zipkin.http-port=9411"]
+#    ports:
+#      - "14269"
+#      - "14269:14268"
+#      - "14267"
+#      - "14250"
+#      - "9412:9411"
+#    restart: on-failure
+#    networks:
+#      - cassandra_common_network
+#      - elasticsearch_common_network
+#      - datacenter_b_network
 
 
 networks:
-  cassandra_common_network:
+  storage_network:
     external: true
-  datacenter_a_network:
-  datacenter_b_network:
+
+  app_network:
+    name: app_network

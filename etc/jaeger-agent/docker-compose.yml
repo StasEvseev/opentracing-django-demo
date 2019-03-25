@@ -11,22 +11,8 @@ services:
       - "5778:5778"
     restart: on-failure
     networks:
-      - jaeger-collector_datacenter_a_network
-
-  jaeger-agent_b:
-    image: jaegertracing/jaeger-agent
-    command: ["--reporter.grpc.host-port=jaeger-collector_b:14250"]
-    ports:
-      - "5776:5775/udp"
-      - "6833:6831/udp"
-      - "6834:6832/udp"
-      - "5779:5778"
-    restart: on-failure
-    networks:
-      - jaeger-collector_datacenter_b_network
+      - app_network
 
 networks:
-  jaeger-collector_datacenter_a_network:
-    external: true
-  jaeger-collector_datacenter_b_network:
+  app_network:
     external: true

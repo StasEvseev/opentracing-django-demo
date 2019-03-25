@@ -3,14 +3,15 @@ version: '2'
 services:
   jaeger-query:
     image: jaegertracing/jaeger-query
-    command: ["--cassandra.keyspace=jaeger_v1_dc1", "--cassandra.servers=cassandra"]
+    #command: ["--cassandra.keyspace=jaeger_v1_dc1", "--cassandra.servers=cassandra"]
+    command: ["--span-storage.type=elasticsearch", "--es.server-urls=http://elasticsearch:9200"]
     ports:
       - "16686:16686"
       - "16687"
     restart: on-failure
     networks:
-      - cassandra_common_network
+      - storage_network
 
 networks:
-  cassandra_common_network:
+  storage_network:
     external: true

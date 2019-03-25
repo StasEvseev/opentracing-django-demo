@@ -8,8 +8,7 @@ services:
     ports:
       - "8000:8080"
     networks:
-      - jaeger-collector_datacenter_a_network
-      - jaeger-collector_datacenter_b_network
+      - app_network
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
 
@@ -20,8 +19,7 @@ services:
       dockerfile: etc/app/Dockerfile
     container_name: django_with_jaeger_a
     networks:
-      - jaeger-collector_datacenter_a_network
-      - jaeger-collector_datacenter_b_network
+      - app_network
     volumes:
       - "../../.:/opt/django/"
       - "../../etc/app/uwsgi.ini:/etc/uwsgi.ini"
@@ -40,7 +38,5 @@ services:
 #      - JAEGER_AGENT_HOST=jaeger-agent_b
 
 networks:
-  jaeger-collector_datacenter_a_network:
-    external: true
-  jaeger-collector_datacenter_b_network:
+  app_network:
     external: true

@@ -10,8 +10,7 @@ services:
     volumes:
       - ./postgresql:/var/lib/postgresql/data
     networks:
-      - jaeger-collector_datacenter_a_network
-      - jaeger-collector_datacenter_b_network
+      - app_network
 
   pypi_server:
     image: mosquito/pypi-server:latest
@@ -23,14 +22,11 @@ services:
     volumes:
       - ./packages:/usr/lib/pypi-server
     networks:
-      - jaeger-collector_datacenter_a_network
-      - jaeger-collector_datacenter_b_network
+      - app_network
     environment:
       # Database URL. Use `sqlite3:///` or `mysql://` when needed
       DB: "postgres://pypi-server:pypi-server@db/pypi-server"
 
 networks:
-  jaeger-collector_datacenter_a_network:
-    external: true
-  jaeger-collector_datacenter_b_network:
+  app_network:
     external: true
