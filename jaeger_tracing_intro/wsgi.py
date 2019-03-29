@@ -26,8 +26,6 @@ def reconnect_to_jaeger():
     Do force reconnect to jaeger collector
     """
     import jaeger_client
-    from opentracing_instrumentation.client_hooks import install_all_patches
 
     jaeger_client.Config._initialized = False
     settings.JAEGER_CONFIG.initialize_tracer()
-    install_all_patches()

@@ -138,14 +138,21 @@ TEST_SETTING = '1'
 SERVICE_NAME_JAEGER = 'django-jaeger'
 
 import jaeger_client
-from opentracing_instrumentation.client_hooks import install_all_patches
+
+from opentracing_instrumentation.client_hooks import psycopg2
+from opentracing_instrumentation.client_hooks import strict_redis
+from opentracing_instrumentation.client_hooks import mysqldb
+
+psycopg2.install_patches()
+strict_redis.install_patches()
+mysqldb.install_patches()
 
 JAEGER_CONFIG = jaeger_client.Config(config={
     'sampler': {'type': 'const', 'param': 1},
     'trace_id_header': 'kpn_trace_id',
+    'max_tag_value_length': 1024,
     'local_agent': {
         'reporting_host': 'jaeger-agent'
     },
 }, service_name=SERVICE_NAME_JAEGER, validate=True)
 JAEGER_CONFIG.initialize_tracer()
-install_all_patches()

@@ -1,5 +1,7 @@
 from de.services.digitalengine.fixed.order.client import FixedOrderService
+from de.services.conf import settings
 from django.http import HttpResponse
+
 import aiohttp
 
 from opentracing.ext import tags
@@ -41,11 +43,18 @@ def client_simple_view(request):
 
     client.set('last_access', 'testvalue')
 
+    # settings.configure(
+    #     JAEGER_ENABLED=True
+    # )
+
     with atomic():
         c = User.objects.count()
         print(c)
 
     service = FixedOrderService()
     response = service.get_status(customer_id=None)()
+
+    service.save(params={})()
+    service.update(params={})()
 
     return HttpResponse(response.raw_response)
