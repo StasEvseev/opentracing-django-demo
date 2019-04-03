@@ -7,6 +7,7 @@ import aiohttp
 from opentracing.ext import tags
 from de.services.digitalengine.conf import settings as de_settings
 from de.services.conf import settings as de_conf_settings
+from de.core.conf import settings as de_core_settings
 import redis
 from django.contrib.auth.models import User
 
@@ -19,6 +20,10 @@ de_settings.configure(
 )
 de_conf_settings.configure(
     MOCK_LIBRARY=None
+)
+
+de_core_settings.configure(
+    JAEGER_ENABLED=True
 )
 
 

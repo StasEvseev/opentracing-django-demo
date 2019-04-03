@@ -90,6 +90,7 @@ DATABASES = {
         'USER': 'jaeger_poc',
         'PASSWORD': 'jaeger_poc',
         'HOST': 'host.docker.internal',
+        # 'CONN_MAX_AGE': 60
     }
 }
 
@@ -143,9 +144,9 @@ from opentracing_instrumentation.client_hooks import psycopg2
 from opentracing_instrumentation.client_hooks import strict_redis
 from opentracing_instrumentation.client_hooks import mysqldb
 
-psycopg2.install_patches()
-strict_redis.install_patches()
-mysqldb.install_patches()
+# psycopg2.install_patches()
+# strict_redis.install_patches()
+# mysqldb.install_patches()
 
 JAEGER_CONFIG = jaeger_client.Config(config={
     'sampler': {'type': 'const', 'param': 1},
