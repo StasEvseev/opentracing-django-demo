@@ -144,14 +144,14 @@ from opentracing_instrumentation.client_hooks import psycopg2
 from opentracing_instrumentation.client_hooks import strict_redis
 from opentracing_instrumentation.client_hooks import mysqldb
 
-# psycopg2.install_patches()
-# strict_redis.install_patches()
-# mysqldb.install_patches()
+psycopg2.install_patches()
+strict_redis.install_patches()
+mysqldb.install_patches()
 
 JAEGER_CONFIG = jaeger_client.Config(config={
     'sampler': {'type': 'const', 'param': 1},
     'trace_id_header': 'kpn_trace_id',
-    'max_tag_value_length': 1024,
+    # 'max_tag_value_length': 1024,
     'local_agent': {
         'reporting_host': 'jaeger-agent'
     },

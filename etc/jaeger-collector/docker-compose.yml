@@ -5,7 +5,7 @@ services:
     image: jaegertracing/jaeger-collector
     # cassandra command: ["--cassandra.keyspace=jaeger_v1_dc1", "--cassandra.servers=cassandra", "--collector.zipkin.http-port=9411"]
     # elasticsearch
-    command: ["--span-storage.type=elasticsearch", "--es.server-urls=http://elasticsearch:9200"]
+#    command: ["--span-storage.type=elasticsearch", "--es.server-urls=http://elasticsearch:9200"]
     ports:
       - "14269"
       - "14268:14268"
@@ -13,8 +13,11 @@ services:
       - "14250"
       - "9411:9411"
     restart: on-failure
+    environment:
+      - ES_TAGS_AS_FIELDS=true
+      - SPAN_STORAGE_TYPE=elasticsearch
+      - ES_SERVER_URLS=http://docker.for.mac.host.internal:9200
     networks:
-#      - cassandra_common_network
       - storage_network
       - app_network
 

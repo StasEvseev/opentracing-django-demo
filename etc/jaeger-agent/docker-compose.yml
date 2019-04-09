@@ -10,6 +10,9 @@ services:
       - "6832:6832/udp"
       - "5778:5778"
     restart: on-failure
+    environment:
+      - ES_TAGS_AS_FIELDS=true
+      - SPAN_STORAGE_TYPE=elasticsearch
     networks:
       - app_network
 

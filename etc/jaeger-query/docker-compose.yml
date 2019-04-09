@@ -4,7 +4,7 @@ services:
   jaeger-query:
     image: jaegertracing/jaeger-query
     #command: ["--cassandra.keyspace=jaeger_v1_dc1", "--cassandra.servers=cassandra"]
-    command: ["--span-storage.type=elasticsearch", "--es.server-urls=http://elasticsearch:9200"]
+    command: ["--span-storage.type=elasticsearch", "--es.server-urls=http://docker.for.mac.host.internal:9200"]
     ports:
       - "16686:16686"
       - "16687"
