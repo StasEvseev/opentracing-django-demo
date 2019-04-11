@@ -1,17 +1,10 @@
-from django.shortcuts import render
 from django.http import HttpResponse
-from django.conf import settings
 
-import re
-import opentracing
 from opentracing import Format
 from opentracing.ext import tags
 from opentracing_instrumentation import traced_function
 
 from opentracing import tracer
-# tracer = settings.OPENTRACING_TRACING
-
-# Create your views here.
 
 
 def server_index(request):

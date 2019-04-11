@@ -17,6 +17,7 @@ services:
       - ES_TAGS_AS_FIELDS=true
       - SPAN_STORAGE_TYPE=elasticsearch
       - ES_SERVER_URLS=http://docker.for.mac.host.internal:9200
+      - ES_TAGS_AS_FIELDS_ALL=true
     networks:
       - storage_network
       - app_network

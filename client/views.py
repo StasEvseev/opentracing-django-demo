@@ -44,17 +44,11 @@ async def call_server(event_loop, url, headers, span):
 
 
 def client_simple_view(request):
-    # url = "http://uwsgi:8080/fixed/v1/order/"
-
+    #: our journey start here
     client.set('last_access', 'testvalue')
 
-    # settings.configure(
-    #     JAEGER_ENABLED=True
-    # )
-
     with atomic():
-        c = User.objects.count()
-        print(c)
+        User.objects.count()
 
     service = FixedOrderService()
     response = service.get_status(customer_id=None)()
